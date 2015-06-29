@@ -1,0 +1,26 @@
+{
+    "newStorageAccountName" : {
+        "value":"changeme"
+    },
+    "adminUsername": {
+        "value": "AzAdmin"
+    },
+    "adminPassword": {
+        "value": "AzP@ssword1"
+    },
+    "location": {
+        "value": "West US"
+    },
+    "sizeOfEachDataDiskInGB" : {
+      "value" : "1023"
+    },
+    "dnsName" : {
+      "value" : "azsql1"
+    },
+    "vmName" : {
+      "value" : "azsql1"
+    },
+    "modulesUrl" : {
+      "value" : "https://github.com/CliveG/cx-sql/raw/master/StoragePool.ps1.zip"
+    }
+}

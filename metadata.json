@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "High IOPS 5 Data Disk storage pool Standard D13 VM",
+  "description": "This template creates a Standard D14 VM with 5 data disks attached.  Using DSC they are automatically striped per best practices to get maximum IOPS and formatted into a single volume.",
+  "summary": "Create a Standard D13 VM from 5 Data Disks configured for high IOPS",
+  "githubUsername": "cliveg",
+  "dateUpdated": "2015-06-29"
+}
