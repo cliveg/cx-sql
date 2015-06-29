@@ -148,7 +148,7 @@
               "protocol": "Tcp",
               "sourcePortRange": "*",
               "destinationPortRange": "1433",
-              "sourceAddressPrefix": "75.159.49.240",
+              "sourceAddressPrefix": "75.159.49.240/32",
               "destinationAddressPrefix": "*",
               "access": "Allow",
               "priority": 300,
