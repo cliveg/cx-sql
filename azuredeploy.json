@@ -10,18 +10,21 @@
     },
     "adminUserName": {
       "type": "string",
+      "defaultValue": "AzAdmin",
       "metadata": {
         "description": "The username of the initial account to be created"
       }
     },
     "adminPassword": {
       "type": "securestring",
+      "defaultValue": "AzP@ssword1",
       "metadata": {
         "description": "The password of the initial account to be created"
       }
     },
     "location": {
       "type": "string",
+      "defaultValue": "West US",
       "metadata": {
         "description": "The Azure region where the resources will be deployed"
       }
@@ -35,13 +38,14 @@
     },
     "dnsName": {
       "type": "string",
+      "defaultValue": "azcxsql1",
       "metadata": {
         "description": "DNS name for the Public IP"
       }
     },
     "vmName": {
       "type": "string",
-      "defaultValue": "myVM",
+      "defaultValue": "azcxsql1",
       "metadata": {
         "description": "The name of the VM resource"
       }
@@ -58,15 +62,15 @@
     "imagePublisher": "MicrosoftSQLServer",
     "imageOffer": "SQL2014-WS2012R2",
     "imageSKU": "Enterprise",
-    "vmSize": "Standard_D13",
-    "virtualNetworkName": "highIopsVNET",
-    "nicName": "highIopsNIC",
+    "vmSize": "Standard_DS13",
+    "virtualNetworkName": "SQLProdVNET",
+    "nicName": "SQLProdNIC",
     "addressPrefix": "10.0.0.0/16",
     "subnet1Name": "Subnet-1",
     "subnet1Prefix": "10.0.0.0/24",
-    "publicIPAddressName": "highIopsPubIP",
+    "publicIPAddressName": "SQLProdPubIP",
     "publicIPAddressType": "Dynamic",
-    "storageAccountType": "Standard_LRS",
+    "storageAccountType": "Premium_LRS",
     "configurationFunction": "StoragePool.ps1\\StoragePool",
     "DscExtensionName": "DscExtension",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
