@@ -128,16 +128,30 @@
       "properties": {
         "securityRules": [
           {
-            "name": "first_rule",
+            "name": "rdp-calgary",
             "properties": {
-              "description": "This is the first rule",
+              "description": "RDP from Calgary Office",
               "protocol": "Tcp",
-              "sourcePortRange": "23-45",
-              "destinationPortRange": "46-56",
-              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "75.159.49.240",
               "destinationAddressPrefix": "*",
               "access": "Allow",
-              "priority": 123,
+              "priority": 300,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "sql-calgary",
+            "properties": {
+              "description": "SQL from Calgary Office",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "1433",
+              "sourceAddressPrefix": "75.159.49.240",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 300,
               "direction": "Inbound"
             }
           }
