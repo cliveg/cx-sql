@@ -81,19 +81,21 @@
     "dataDisk4VhdName": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/',parameters('vmName'),'dataDisk4.vhd')]",
     "dataDisk5VhdName": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/',parameters('vmName'),'dataDisk5.vhd')]",
     "LBFE": "LBFE",
-		"LBBE": "LBBE",
+    "LBBE": "LBBE",
     "RDPNAT": "RDP",
     "spWebNAT": "sfbWeb",
     "spNicId": "[resourceId('Microsoft.Network/networkInterfaces',variables('NicName'))]",
-		"spLBName": "spLoadBalancer",
-		"spIPConfigID": "[concat(variables('spNicId'),'/ipConfigurations/ipconfig1')]",
-		"splbID": "[resourceId('Microsoft.Network/loadBalancers',variables('spLBName'))]",
-		"splbFEConfigID": "[concat(variables('splbID'),'/frontendIPConfigurations/',variables('LBFE'))]",
-		"spRDPNATRuleID": "[concat(variables('splbID'),'/inboundNatRules/',variables('RDPNAT'))]",
-		"spWebNATRuleID": "[concat(variables('splbID'),'/inboundNatRules/',variables('spWebNAT'))]",
-		"spBEAddressPoolID": "[concat(variables('splbID'),'/backendAddressPools/',variables('LBBE'))]",
+    "spLBName": "spLoadBalancer",
+    "spIPConfigID": "[concat(variables('spNicId'),'/ipConfigurations/ipconfig1')]",
+    "splbID": "[resourceId('Microsoft.Network/loadBalancers',variables('spLBName'))]",
+    "splbFEConfigID": "[concat(variables('splbID'),'/frontendIPConfigurations/',variables('LBFE'))]",
+    "spRDPNATRuleID": "[concat(variables('splbID'),'/inboundNatRules/',variables('RDPNAT'))]",
+    "spWebNATRuleID": "[concat(variables('splbID'),'/inboundNatRules/',variables('spWebNAT'))]",
+    "spBEAddressPoolID": "[concat(variables('splbID'),'/backendAddressPools/',variables('LBBE'))]",
     "RDPPort": 3389,
-    "SQLPort": 1433
+    "SQLPort": 1433,
+    "networkSecurityGroupName": "networkSecurityGroup1"
+
   },
   "resources": [
     {
@@ -117,11 +119,40 @@
         }
       }
     },
+
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('networkSecurityGroupName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "first_rule",
+            "properties": {
+              "description": "This is the first rule",
+              "protocol": "Tcp",
+              "sourcePortRange": "23-45",
+              "destinationPortRange": "46-56",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 123,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+
     {
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('virtualNetworkName')]",
       "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
+      ],
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -132,66 +163,68 @@
           {
             "name": "[variables('subnet1Name')]",
             "properties": {
-              "addressPrefix": "[variables('subnet1Prefix')]"
+              "addressPrefix": "[variables('subnet1Prefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+              }
             }
           }
         ]
       }
     },
-    
+
     {
-			"apiVersion": "2015-05-01-preview",
-			"name": "[variables('spLBName')]",
-			"type": "Microsoft.Network/loadBalancers",
-			"location": "[parameters('location')]",
-			"dependsOn": [
-				"[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-			],
-			"properties": {
-				"frontendIPConfigurations": [
-					{
-						"name": "[variables('LBFE')]",
-						"properties": {
-							"publicIPAddress": {
-								"id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
-							}
-						}
-					}
-				],
-				"backendAddressPools": [
-					{
-						"name": "[variables('LBBE')]"
-					}
-				],
-				"inboundNatRules": [
-					{
-						"name": "[variables('RDPNAT')]",
-						"properties": {
-							"frontendIPConfiguration": {
-								"id": "[variables('splbFEConfigID')]"
-							},
-							"protocol": "tcp",
-							"frontendPort": 3389,
-							"backendPort": 3389,
-							"enableFloatingIP": false
-						}
-					},
-					{
-						"name": "[variables('spWebNAT')]",
-						"properties": {
-							"frontendIPConfiguration": {
-								"id": "[variables('splbFEConfigID')]"
-							},
-							"protocol": "tcp",
-							"frontendPort": 1433,
-							"backendPort": 1433,
-							"enableFloatingIP": false
-						}
-					}
-				]
-			}
-		},
-    
+      "apiVersion": "2015-05-01-preview",
+      "name": "[variables('spLBName')]",
+      "type": "Microsoft.Network/loadBalancers",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+      ],
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "[variables('LBFE')]",
+            "properties": {
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "[variables('LBBE')]"
+          }
+        ],
+        "inboundNatRules": [
+          {
+            "name": "[variables('RDPNAT')]",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('splbFEConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 3389,
+              "backendPort": 3389,
+              "enableFloatingIP": false
+            }
+          },
+          {
+            "name": "[variables('spWebNAT')]",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('splbFEConfigID')]"
+              },
+              "protocol": "tcp",
+              "frontendPort": 1433,
+              "backendPort": 1433,
+              "enableFloatingIP": false
+            }
+          }
+        ]
+      }
+    },
 
     {
       "apiVersion": "2015-05-01-preview",
@@ -203,30 +236,30 @@
         "[concat('Microsoft.Network/loadBalancers/',variables('splbName'))]"
       ],
       "properties": {
-				"ipConfigurations": [
-					{
-						"name": "ipconfig1",
-						"properties": {
-							"privateIPAllocationMethod": "Dynamic",
-							"subnet": {
-								"id": "[variables('Subnet1Ref')]"
-							},
-							"loadBalancerBackendAddressPools": [
-								{
-									"id": "[variables('spBEAddressPoolID')]"
-								}
-							],
-							"loadBalancerInboundNatRules": [
-								{
-									"id": "[variables('spRDPNATRuleID')]"
-								},
-								{
-									"id": "[variables('spWebNATRuleID')]"
-								}
-							]
-						}
-					}
-				]
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('Subnet1Ref')]"
+              },
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[variables('spBEAddressPoolID')]"
+                }
+              ],
+              "loadBalancerInboundNatRules": [
+                {
+                  "id": "[variables('spRDPNATRuleID')]"
+                },
+                {
+                  "id": "[variables('spWebNATRuleID')]"
+                }
+              ]
+            }
+          }
+        ]
 
       }
     },
@@ -344,4 +377,4 @@
       }
     }
   ]
-}
+    }
