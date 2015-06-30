@@ -49,7 +49,7 @@
         },
     "vmName": {
       "type": "string",
-      "defaultValue": "101-vm-sql",
+      "defaultValue": "101-sql-vm",
       "metadata": {
         "description": "The name of the VM resource"
       }
@@ -67,13 +67,13 @@
     "imageOffer": "SQL2014-WS2012R2",
     "imageSKU": "Enterprise",
     "vmSize": "Standard_DS3",
-    "virtualNetworkName": "101-VNet-SQL",
-    "nicName": "101-NIC-SQL",
-    "networkSecurityGroupName": "101-NSG-SQL",
+    "virtualNetworkName": "101-SQL-VNet",
+    "nicName": "101-SQL-NIC",
+    "networkSecurityGroupName": "101-SQL-NSG",
     "addressPrefix": "10.0.0.0/16",
     "subnet1Name": "Subnet-1",
     "subnet1Prefix": "10.0.0.0/24",
-    "publicIPAddressName": "101-PubIP-Prod",
+    "publicIPAddressName": "101-SQL-PubIP",
     "publicIPAddressType": "Dynamic",
     "storageAccountType": "Premium_LRS",
     "configurationFunction": "StoragePool.ps1\\StoragePool",
@@ -116,9 +116,9 @@
       "properties": {
         "securityRules": [
           {
-            "name": "rdp-calgary",
+            "name": "rdp-hq",
             "properties": {
-              "description": "RDP from Calgary Office",
+              "description": "RDP from HQ Office",
               "protocol": "Tcp",
               "sourcePortRange": "*",
               "destinationPortRange": "3389",
@@ -130,9 +130,9 @@
             }
           },
           {
-            "name": "sql-calgary",
+            "name": "sql-hq",
             "properties": {
-              "description": "SQL from Calgary Office",
+              "description": "SQL from HQ Office",
               "protocol": "Tcp",
               "sourcePortRange": "*",
               "destinationPortRange": "1433",
