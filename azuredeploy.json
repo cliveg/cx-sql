@@ -80,11 +80,7 @@
     "DscExtensionName": "DscExtension",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
     "subnet1Ref": "[concat(variables('vnetID'),'/subnets/',variables('subnet1Name'))]",
-    "dataDisk1VhdName": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/',parameters('vmName'),'dataDisk1.vhd')]",
-    "dataDisk2VhdName": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/',parameters('vmName'),'dataDisk2.vhd')]",
-    "dataDisk3VhdName": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/',parameters('vmName'),'dataDisk3.vhd')]",
-    "dataDisk4VhdName": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/',parameters('vmName'),'dataDisk4.vhd')]",
-    "dataDisk5VhdName": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/',parameters('vmName'),'dataDisk5.vhd')]",
+    "dataDiskVhdName": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/')]"
   },
   "resources": [
     {
@@ -251,7 +247,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 0,
               "vhd": {
-                "Uri": "[concat(variables('dataDisk1VhdName'),copyIndex())]"
+                "Uri": "[concat(variables('dataDiskVhdName'),parameters('vmName'),copyIndex(),'dataDisk1.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -260,7 +256,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 1,
               "vhd": {
-                "Uri": "[concat(variables('dataDisk2VhdName'),copyIndex())]"
+                "Uri": "[concat(variables('dataDiskVhdName'),parameters('vmName'),copyIndex(),'dataDisk2.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -269,7 +265,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 2,
               "vhd": {
-                "Uri": "[concat(variables('dataDisk3VhdName'),copyIndex())]"
+                "Uri": "[concat(variables('dataDiskVhdName'),parameters('vmName'),copyIndex(),'dataDisk3.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -278,7 +274,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 3,
               "vhd": {
-                "Uri": "[concat(variables('dataDisk4VhdName'),copyIndex())]"
+                "Uri": "[concat(variables('dataDiskVhdName'),parameters('vmName'),copyIndex(),'dataDisk4.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -287,7 +283,8 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 4,
               "vhd": {
-                "Uri": "[concat(variables('dataDisk5VhdName'),copyIndex())]"
+                "Uri": "[concat(variables('dataDiskVhdName'),parameters('vmName'),copyIndex(),'dataDisk5.vhd')]"
+
               },
               "createOption": "Empty"
             }
@@ -304,7 +301,11 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('vmName'),'/', variables('DscExtensionName'),copyIndex())]",
+      "copy": {
+        "name": "nodeCopy",
+        "count": "[parameters('vmCount')]"
+      },
+      "name": "[concat(parameters('vmName'),copyIndex(),'/', variables('DscExtensionName'))]",
       "apiVersion": "2015-05-01-preview",
       "location": "[parameters('location')]",
       "dependsOn": [
