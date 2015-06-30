@@ -38,7 +38,6 @@
     },
     "dnsName": {
       "type": "string",
-      "defaultValue": "cliveg101sql",
       "metadata": {
         "description": "DNS name for the Public IP"
       }
