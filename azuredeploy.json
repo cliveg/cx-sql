@@ -236,7 +236,7 @@
           "osDisk": {
             "name": "osdisk",
             "vhd": {
-              "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/',concat('osdisk'),copyIndex(),'.vhd')]"
+              "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/',concat('osdisk',copyIndex()),'.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
@@ -247,7 +247,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 0,
               "vhd": {
-                "Uri": "[concat(variables('dataDiskVhdName'),parameters('vmName'),copyIndex(),'dataDisk1.vhd')]"
+                "Uri": "[concat(variables('dataDiskVhdName'),concat(parameters('vmName'),copyIndex()),'dataDisk1.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -256,7 +256,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 1,
               "vhd": {
-                "Uri": "[concat(variables('dataDiskVhdName'),parameters('vmName'),copyIndex(),'dataDisk2.vhd')]"
+                "Uri": "[concat(variables('dataDiskVhdName'),concat(parameters('vmName'),copyIndex()),'dataDisk2.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -265,7 +265,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 2,
               "vhd": {
-                "Uri": "[concat(variables('dataDiskVhdName'),parameters('vmName'),copyIndex(),'dataDisk3.vhd')]"
+                "Uri": "[concat(variables('dataDiskVhdName'),concat(parameters('vmName'),copyIndex()),'dataDisk3.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -274,7 +274,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 3,
               "vhd": {
-                "Uri": "[concat(variables('dataDiskVhdName'),parameters('vmName'),copyIndex(),'dataDisk4.vhd')]"
+                "Uri": "[concat(variables('dataDiskVhdName'),concat(parameters('vmName'),copyIndex()),'dataDisk4.vhd')]"
               },
               "createOption": "Empty"
             },
@@ -283,7 +283,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 4,
               "vhd": {
-                "Uri": "[concat(variables('dataDiskVhdName'),parameters('vmName'),copyIndex(),'dataDisk5.vhd')]"
+                "Uri": "[concat(variables('dataDiskVhdName'),concat(parameters('vmName'),copyIndex()),'dataDisk5.vhd')]"
 
               },
               "createOption": "Empty"
@@ -293,7 +293,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName')),copyIndex())]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'),copyIndex()))]"
             }
           ]
         }
