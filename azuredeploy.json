@@ -68,12 +68,12 @@
     "imageSKU": "Enterprise",
     "vmSize": "Standard_DS3",
     "virtualNetworkName": "101-VNet-SQL",
-    "nicName": "101-NIC-SQLProd1",
+    "nicName": "101-NIC-SQLProd",
     "networkSecurityGroupName": "101-NIC-SQL",
     "addressPrefix": "10.0.0.0/16",
     "subnet1Name": "Subnet-1",
     "subnet1Prefix": "10.0.0.0/24",
-    "publicIPAddressName": "101-PubIP-Prod1",
+    "publicIPAddressName": "101-PubIP-Prod",
     "publicIPAddressType": "Dynamic",
     "storageAccountType": "Premium_LRS",
     "configurationFunction": "StoragePool.ps1\\StoragePool",
@@ -180,7 +180,7 @@
       "name": "[concat(variables('nicName'),copyIndex())]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('publicIPAddressName')),copyIndex())]",
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'),copyIndex())]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "properties": {
