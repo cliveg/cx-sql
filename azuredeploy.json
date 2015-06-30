@@ -38,14 +38,18 @@
     },
     "dnsName": {
       "type": "string",
-      "defaultValue": "azcxsql1",
+      "defaultValue": "cliveg101sql",
       "metadata": {
         "description": "DNS name for the Public IP"
       }
     },
+    "vmCount": {
+            "type": "int",
+            "defaultValue": 2
+        },
     "vmName": {
       "type": "string",
-      "defaultValue": "azcxsql1",
+      "defaultValue": "101-vm-sql",
       "metadata": {
         "description": "The name of the VM resource"
       }
@@ -95,16 +99,19 @@
     {
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIPAddressName')]",
+      "name": "[concat(variables('publicIPAddressName'),copyIndex())]",
       "location": "[parameters('location')]",
       "properties": {
         "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
         "dnsSettings": {
-          "domainNameLabel": "[parameters('dnsName')]"
+          "domainNameLabel": "[concat(parameters('dnsName'),copyIndex())]"
         }
+      },
+      "copy": {
+        "name": "publicIpCopy",
+        "count": "[parameters('vmCount')]"
       }
     },
-   
         {
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/networkSecurityGroups",
@@ -143,7 +150,6 @@
         ]
       }
     },
-
     {
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/virtualNetworks",
@@ -175,20 +181,20 @@
     {
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('nicName')]",
+      "name": "[concat(variables('nicName'),copyIndex())]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+        "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('publicIPAddressName')),copyIndex())]",
         "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "properties": {
         "ipConfigurations": [
           {
-            "name": "ipconfig1",
+            "name": "[concat('ipconfig', copyIndex())]",
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressName')),copyIndex())]"
               },
               "subnet": {
                 "id": "[variables('subnet1Ref')]"
@@ -196,23 +202,31 @@
             }
           }
         ]
+      },
+      "copy": {
+        "name": "nicCopy",
+        "count": "[parameters('vmCount')]"
       }
     },
     {
       "apiVersion": "2015-05-01-preview",
+      "copy": {
+        "name": "nodeCopy",
+        "count": "[parameters('vmCount')]"
+      },
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[parameters('vmName')]",
+      "name": "[concat(parameters('vmName'),copyIndex())]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', parameters('newStorageAccountName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('nicName')),copyIndex())]"
       ],
       "properties": {
         "hardwareProfile": {
           "vmSize": "[variables('vmSize')]"
         },
         "osProfile": {
-          "computername": "[parameters('vmName')]",
+          "computername": "[concat(parameters('vmName'),copyIndex())]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
@@ -226,7 +240,7 @@
           "osDisk": {
             "name": "osdisk",
             "vhd": {
-              "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/','osdisk.vhd')]"
+              "uri": "[concat('http://',parameters('newStorageAccountName'),'.blob.core.windows.net/vhds/',concat('osdisk'),copyIndex(),'.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
@@ -237,7 +251,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 0,
               "vhd": {
-                "Uri": "[variables('dataDisk1VhdName')]"
+                "Uri": "[concat(variables('dataDisk1VhdName'),copyIndex())]"
               },
               "createOption": "Empty"
             },
@@ -246,7 +260,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 1,
               "vhd": {
-                "Uri": "[variables('dataDisk2VhdName')]"
+                "Uri": "[concat(variables('dataDisk2VhdName'),copyIndex())]"
               },
               "createOption": "Empty"
             },
@@ -255,7 +269,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 2,
               "vhd": {
-                "Uri": "[variables('dataDisk3VhdName')]"
+                "Uri": "[concat(variables('dataDisk3VhdName'),copyIndex())]"
               },
               "createOption": "Empty"
             },
@@ -264,7 +278,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 3,
               "vhd": {
-                "Uri": "[variables('dataDisk4VhdName')]"
+                "Uri": "[concat(variables('dataDisk4VhdName'),copyIndex())]"
               },
               "createOption": "Empty"
             },
@@ -273,7 +287,7 @@
               "diskSizeGB": "[parameters('sizeOfEachDataDiskInGB')]",
               "lun": 4,
               "vhd": {
-                "Uri": "[variables('dataDisk5VhdName')]"
+                "Uri": "[concat(variables('dataDisk5VhdName'),copyIndex())]"
               },
               "createOption": "Empty"
             }
@@ -282,7 +296,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName')),copyIndex())]"
             }
           ]
         }
@@ -290,11 +304,11 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('vmName'),'/', variables('DscExtensionName'))]",
+      "name": "[concat(parameters('vmName'),'/', variables('DscExtensionName'),copyIndex())]",
       "apiVersion": "2015-05-01-preview",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', concat(parameters('vmName')),copyIndex())]"
       ],
       "properties": {
         "publisher": "Microsoft.Powershell",
@@ -305,7 +319,7 @@
           "SasToken": "",
           "ConfigurationFunction": "[variables('configurationFunction')]",
           "Properties": {
-            "MachineName": "[parameters('vmName')]"
+            "MachineName": "[concat(parameters('vmName'),copyIndex())]"
           }
         },
         "protectedSettings": null
