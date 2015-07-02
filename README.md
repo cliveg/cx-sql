@@ -13,17 +13,19 @@ Trigger using the button on this page 'Deploy to Azure' or PowerShell.<br>
 Azure PowerShell Approach:<br>
 1. Add-AzureAccount<br>
 2. Set-AzureSubscription -Name 'my subscription' (optional if you have multiple!)<br>
-3. New-AzureResourceGroup -DeploymentName 'AzureDeploy' -Location 'WestUS' -TemplateUri 'https://raw.githubusercontent.com/cliveg/cx-sql/prod-two-server/azuredeploy.json'-verbose -newStorageAccountName contososa123 -DnsName uniquename123 -Name 'SQLServer' -vmCount 1
+3. New-AzureResourceGroup -DeploymentName 'AzureDeploy' -Location 'WestUS' -TemplateUri 'https://raw.githubusercontent.com/cliveg/cx-sql/prod-two-server/azuredeploy.json'-verbose -newStorageAccountName contososa123 -DnsName uniquename123 -Name 'SQLServer' -vmCount 1<br>
+<br>
+
 Below are the parameters that the template expects<br>
 
 | Name   | Description    |
 |:--- |:---|
 | newStorageAccountName  | Name of the storage account to create |
-| adminUsername | Admin username for the VM |
-| adminPassword | Admin password for the VM |
+| adminUsername | Admin username for the VM <ul><li>AzAdmin **(default)**</li></ul>|
+| adminPassword | Admin password for the VM <ul><li>AzP@ssword1 **(default)**</li></ul>|
 | vmSourceImageName | Name of image to use for the VM <br> <ul><li>SQL 2014 Enterprise on Windows Server 2012 R2 Datacenter**(default)**</li></ul>|
 | location  | Location where to deploy the resource  |
-| vmCount | Quantity of the VMs <br> <ul>2<li>**(default)**</li></ul>|
+| vmCount | Quantity of the VMs <br> <ul><li>2 **(default)**</li></ul>|
 | vmSize | Size of the VM <br> <ul>**Currenlty allowed values**<li>Standard_DS13 **(default)**</li></ul>|
 | sizeOfEachDataDiskInGB | The disks created will all be of this size <ul><li>1023 **(default)**</li></ul>|
 | publicIPAddressName | Name of the public IP address to create |
