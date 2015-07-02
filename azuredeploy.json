@@ -39,13 +39,17 @@
     "dnsName": {
       "type": "string",
       "metadata": {
-        "description": "DNS name for the Public IP"
+        "description": "DNS name for the Public IP - must be globally unique"
       }
     },
     "vmCount": {
-            "type": "int",
-            "defaultValue": 2
-        },
+      "type": "int",
+      "defaultValue": 2,
+       "metadata": {
+       "description": "Number of SQL Server VMs to deploy" 
+      }
+    },
+
     "vmName": {
       "type": "string",
       "defaultValue": "101-sql-vm",
@@ -53,9 +57,16 @@
         "description": "The name of the VM resource"
       }
     },
+    "trustedSQLAccessIPRange": {
+      "type": "string",
+      "defaultValue": "23.100.32.0/20",
+       "metadata": {
+       "description": "IP Addresses allowed to connect directly to SQL over the Internet e.g. IP such as 23.100.32.0/32 or subnet 23.100.32.0/20" 
+      }
+    },
     "modulesUrl": {
       "type": "string",
-      "defaultValue": "https://github.com/CliveG/cx-sql/raw/master/StoragePool.ps1.zip",
+      "defaultValue": "https://github.com/CliveG/cx-sql/raw/prod-two-server/StoragePool.ps1.zip",
       "metadata": {
         "description": "URL for the DSC configuration module. NOTE: Can be a Github url(raw) to the zip file"
       }
@@ -121,7 +132,7 @@
               "protocol": "Tcp",
               "sourcePortRange": "*",
               "destinationPortRange": "3389",
-              "sourceAddressPrefix": "75.159.49.240/32",
+              "sourceAddressPrefix": "*",
               "destinationAddressPrefix": "*",
               "access": "Allow",
               "priority": 300,
@@ -135,7 +146,7 @@
               "protocol": "Tcp",
               "sourcePortRange": "*",
               "destinationPortRange": "1433",
-              "sourceAddressPrefix": "75.159.49.240/32",
+              "sourceAddressPrefix": "[parameters('trustedSQLAccessIPRange')]",
               "destinationAddressPrefix": "*",
               "access": "Allow",
               "priority": 301,
