@@ -1,6 +1,6 @@
-# VM-high-iops-data-disks
+# SQL VM-high-iops-data-disks
 
-Create a SQL Server Enterprise VM with 5TB of Data Disks configured for high IOPS
+Create a SQL Server Enterprise VM with 5TB of Data Disks configured for high IOPS 
 
 <a href="https://azuredeploy.net" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
